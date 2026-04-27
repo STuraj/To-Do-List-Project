@@ -9,7 +9,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping
+@RequestMapping("/tasks")
 public class TaskController {
 
     private final TaskService taskService;
@@ -23,6 +23,10 @@ public class TaskController {
     @GetMapping
     public List<Task> getAllTasks(){
         return taskService.getAllTasks();
+    }
+    @PutMapping("/{id}")
+    public Task updateTask(@PathVariable Long id, @RequestBody Task task){
+        return taskService.updateTask(id, task);
     }
     @DeleteMapping("/{id}")
 public void deleteTask(@PathVariable  Long id){

@@ -11,18 +11,21 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TaskService {
-    @Autowired
+
 private final TaskRepository repo;
 
 public List<Task> getAllTasks(){
     return repo.findAll();
 }
 
-//    public Task getTasksById(long id) {
-//    return repo.findById(id);
-//    }
-
     public Task addTask(Task task) {
+    return repo.save(task);
+    }
+    public  Task updateTask(Long id, Task updatedTask){
+    Task task = repo.findById(id)
+            .orElseThrow(()-> new RuntimeException("Task not found"));
+    task.setTitle(updatedTask.getTitle());
+    task.setCompleted(updatedTask.isCompleted());
     return repo.save(task);
     }
     public void deleteTask(Long id){
