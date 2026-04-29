@@ -1,9 +1,11 @@
 package project.todolist.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import project.todolist.dto.TaskRequestDto;
+import project.todolist.dto.TaskResponseDto;
 import project.todolist.entity.Task;
+import project.todolist.mapping.TaskMapper;
 import project.todolist.repository.TaskRepository;
 
 import java.util.List;
@@ -13,21 +15,33 @@ import java.util.List;
 public class TaskService {
 
 private final TaskRepository repo;
+private final TaskMapper mapper;
 
-public List<Task> getAllTasks(){
-    return repo.findAll();
+public List<TaskResponseDto> getAllTasks(){
+    return repo.findAll()
+            .stream()
+            .map(mapper::toDto)
+            .toList();
 }
 
-    public Task addTask(Task task) {
-    return repo.save(task);
+    public TaskResponseDto addTask(TaskRequestDto dto) {
+    Task task = mapper.toEntity(dto);
+    Task saved = repo.save(task);
+
+    return mapper.toDto(saved);
+
     }
-    public  Task updateTask(Long id, Task updatedTask){
+
+    public  TaskResponseDto updateTask(Long id, TaskRequestDto dto){
+
     Task task = repo.findById(id)
             .orElseThrow(()-> new RuntimeException("Task not found"));
-    task.setTitle(updatedTask.getTitle());
-    task.setCompleted(updatedTask.isCompleted());
-    return repo.save(task);
+
+    mapper.updateTaskFromDto(dto, task);
+
+    return mapper.toDto(repo.save(task));
     }
+
     public void deleteTask(Long id){
     repo.deleteById(id);
     }

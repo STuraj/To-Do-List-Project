@@ -2,7 +2,10 @@ package project.todolist.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import project.todolist.dto.TaskRequestDto;
+import project.todolist.dto.TaskResponseDto;
 import project.todolist.entity.Task;
+import project.todolist.mapping.TaskMapper;
 import project.todolist.service.TaskService;
 
 import java.util.List;
@@ -14,20 +17,23 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @PostMapping("/{taskId}/ add")
-    public Task addTask(@RequestBody Task task){
 
-        return taskService.addTask(task);
+    @PostMapping
+    public TaskResponseDto addTask(@RequestBody TaskRequestDto dto){
+
+        return taskService.addTask(dto);
     }
 
     @GetMapping
-    public List<Task> getAllTasks(){
+    public List<TaskResponseDto> getAllTasks(){
         return taskService.getAllTasks();
     }
+
     @PutMapping("/{id}")
-    public Task updateTask(@PathVariable Long id, @RequestBody Task task){
-        return taskService.updateTask(id, task);
+    public TaskResponseDto updateTask(@PathVariable Long id, @RequestBody TaskRequestDto dto){
+        return taskService.updateTask(id, dto);
     }
+
     @DeleteMapping("/{id}")
 public void deleteTask(@PathVariable  Long id){
        taskService.deleteTask(id);
